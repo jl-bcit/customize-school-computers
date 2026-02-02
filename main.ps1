@@ -1,3 +1,7 @@
+param(
+  [switch]$sw
+)
+
 # Set Combine taskbar buttons - When taskbar is full
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarGlomLevel" -Value 1
 
@@ -15,9 +19,17 @@ Write-Host "Applying changes by restarting Explorer..." -ForegroundColor Cyan
 Stop-Process -Name explorer -Force
 Start-Process explorer
 
-# Install Notion
-Invoke-WebRequest -Uri "https://www.notion.so/desktop/windows/download" -OutFile "$env:USERPROFILE\Downloads\NotionSetup.exe"
-Start-Process "$env:USERPROFILE\Downloads\NotionSetup.exe"
+if ($sw)
+{
+  # Install Notion
+  Invoke-WebRequest -Uri "https://www.notion.so/desktop/windows/download" -OutFile "$env:USERPROFILE\Downloads\NotionSetup.exe"
+  Start-Process "$env:USERPROFILE\Downloads\NotionSetup.exe"
+  
+  # Install Discord
+  Invoke-WebRequest -Uri "https://discord.com/api/downloads/distributions/app/installers/latest?channel=stable&platform=win&arch=x64" -OutFile "$env:USERPROFILE\Downloads\DiscordSetup.exe"
+  Start-Process "$env:USERPROFILE\Downloads\DiscordSetup.exe"
+  
+  # Install VSCode
+  winget install --id  Microsoft.VisualStudioCode -e --accept-package-agreements --accept-source-agreements
+}
 
-# Install VSCode
-winget install --id  Microsoft.VisualStudioCode -e --accept-package-agreements --accept-source-agreements
